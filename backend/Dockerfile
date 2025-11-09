@@ -21,9 +21,13 @@ RUN uv sync --dev
 # Copy application code
 COPY . .
 
+# Set PYTHONPATH so Python can find the src directory
+ENV PYTHONPATH=/app/src
+
 # Expose port for API service
 EXPOSE 8000
 
 # Default command - run API service using uv run
-CMD ["uv", "run", "python", "-m", "uvicorn", "dynamic_tools.api.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Note: Railway provides $PORT environment variable
+CMD ["sh", "-c", "uv run uvicorn src.dynamic_tools.api.app:app --host 0.0.0.0 --port ${PORT:-8000}"]
 
